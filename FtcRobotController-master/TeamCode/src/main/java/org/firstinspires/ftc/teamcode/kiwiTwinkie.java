@@ -9,47 +9,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import java.lang.Math;
+
 @TeleOp
 @Photon
-private class Vector{ //for handling values associated with vectors.
-    static boolean POLAR = true, CARTESIAN = false;
-    static int FRONT = 0, LEFT = 1, RIGHT = 2;
-    double angle = 0, magnitude = 0, i = 0, j = 0;
-    public void reset(boolean resetPolar){
-        //converting from one type to the other.
-        // True resets angle or polar, false resets i+j or cartesian
-        if (resetPolar){
-            magnitude = Math.sqrt( (i*i+j*j));
 
-            if (i<0){//calculate angle baised on arctan however if condition used to specify special conditions like i ==0;
-                angle = Math.atan(j/i)+Math.pi/2;
-            }else if(i>0){
-                angle = Math.atan(j/i);
-            }else{
-                if(j >= 0){
-                    angle = Math.pi/2;
-                }else{
-                    angle = Math.pi*3/2;
-                }
-            }
-        }else{
-            i = magnitude*Math.cos(angle);
-            j = magnitude*Math.sin(angle);
-        }
-
-
-    }
-    public double calculateWheel(int wheelNum){
-        int calulationAngle = ((wheelNum * Math.pi* 2/3)-angle)
-        return Math.cos(calulationAngle);
-    }
-}
 public class kiwiTwinkie extends LinearOpMode{
     private DcMotor leftMotor, rightMotor, frontMotor, flyWheel;
-    private double powerLeft, powerRight, powerFront;
-    private boolean runFlyWheel = false;
-    private Vector Movement;
+    private double powerLeft = 0, powerRight = 0, powerFront = 0;
+    private boolean runFlyWheel = false, flyWheelWait = false, flyWheelDecrementWait = false, flyWheelIncrementWait = false;
+    private int flyWheelSpeed = 10;
+    private Vector Movement = new Vector();
+
     @Override
     public void runOpMode(){
         flyWheel = hardwareMap.get(DcMotor.class, "FlyWheel");
@@ -60,18 +30,38 @@ public class kiwiTwinkie extends LinearOpMode{
         waitForStart();
         while (opModeIsActive()){
             //rightBumper toggles flywheel
-            if (gamepad1.right_bumper) runFlyWheel = !runFlyWheel; //
+            if (gamepad1.right_trigger>0.5 && !flyWheelWait){
+                runFlyWheel = !runFlyWheel;
+                flyWheelWait = true;
+            }
+            if (!(gamepad1.right_trigger>0.5)){
+                flyWheelWait = false;
+            }
+            if (gamepad1.left_bumper && !flyWheelDecrementWait && flyWheelSpeed > 0){
+                flyWheelSpeed -= 1;
+                flyWheelDecrementWait = true;
+            }
+            if (!gamepad1.left_bumper){
+                flyWheelDecrementWait = false;
+            }
+            if (gamepad1.right_bumper && !flyWheelIncrementWait && flyWheelSpeed < 10){
+                flyWheelSpeed += 1;
+                flyWheelIncrementWait = true;
+            }
+            if (!gamepad1.right_bumper){
+                flyWheelIncrementWait = false;
+            }
 
 
             //recieve values in a cartesien manner and convert them to polar
-            Movement.i = gamepad1.left_joystick_x;
-            Movement.j = gamepad1.left_joystick_y;
+            Movement.i = gamepad1.left_stick_x;
+            Movement.j = gamepad1.left_stick_y;
             Movement.reset(Vector.POLAR);//Change vector cartesian to polar (from i/j to angle/magnitude)
 
             //add power to move in line
-            powerFront = Movement.calculateWheel(Vector.FRONT);
-            powerLeft = Movement.calculateWheel(Vector.LEFT);
-            powerRight = Movement.calculateWheel(Vector.RIGHT);
+            powerFront = Movement.calculateWheel(Vector.FRONT)*Movement.magnitude;
+            powerLeft = Movement.calculateWheel(Vector.LEFT)*Movement.magnitude;
+            powerRight = Movement.calculateWheel(Vector.RIGHT)*Movement.magnitude;
 
             //addpower to rotate
             powerFront+=gamepad1.right_stick_x; //If rotate all wheels move with same speed.
@@ -99,13 +89,15 @@ public class kiwiTwinkie extends LinearOpMode{
 
             //apply values
             if (runFlyWheel){
-                flyWheel.setPower(-1.0);
+                flyWheel.setPower((((double)flyWheelSpeed)/10));
+            }else{
+                flyWheel.setPower(0);
             }
             frontMotor.setPower(powerFront);
             rightMotor.setPower(powerRight);
             leftMotor.setPower(powerLeft);
 
-            telemetry.addData("Status","Self-destructing1");
+            telemetry.addData("Status",flyWheelSpeed);
             telemetry.update();
         }
     }
