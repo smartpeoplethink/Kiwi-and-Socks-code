@@ -76,7 +76,9 @@ public class kiwiTwinkieBeta extends LinearOpMode{
             frontMotor.setPower(motorControl.front);
             rightMotor.setPower(motorControl.right);
             leftMotor.setPower(motorControl.left);
-
+            telemetry.addData("Lead coder: ", "Sam");
+            telemetry.addData("Lead builder: ", "Jacob");
+            telemetry.addData("Lead 3d designer: ", "Gian-Luca");
             telemetry.addData("Version of Kiwi: ", 90);
             telemetry.addData("Speed: ",flyWheelSpeed);
             telemetry.addData("Servo: ",RELEASE);
