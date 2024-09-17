@@ -36,7 +36,7 @@ public class kiwiTwinkie extends LinearOpMode{
 
         waitForStart();
         while (opModeIsActive()){
-            //rightBumper toggles flywheel
+            //left trigger toggles flywheel
             if (gamepad1.left_trigger>0.5 && !flyWheelWait){
                 runFlyWheel = !runFlyWheel;
                 flyWheelWait = true;
@@ -65,7 +65,9 @@ public class kiwiTwinkie extends LinearOpMode{
                 servoRelease = !servoRelease;
                 servoReleaseWait = true;
             }
-            if (!(gamepad1.right_trigger > 0.5))servoReleaseWait = !servoReleaseWait;
+            if (!(gamepad1.right_trigger > 0.5)){
+                servoReleaseWait = !servoReleaseWait;
+            }
             //testing servo values:
             if (gamepad1.right_bumper){
                 RELEASE+=0.01;

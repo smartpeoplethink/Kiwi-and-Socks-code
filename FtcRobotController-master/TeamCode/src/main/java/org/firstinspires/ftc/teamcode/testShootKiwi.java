@@ -16,7 +16,7 @@ public class testShootKiwi extends LinearOpMode {
         FlyWheel = hardwareMap.get(DcMotor.class, "FlyWheel");
         waitForStart();
         while (opModeIsActive()){
-            FlyWheel.setPower(-1.0);
+            FlyWheel.setPower(1.0);
             telemetry.addData("Status","7");
             telemetry.update();
         }
