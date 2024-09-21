@@ -55,7 +55,7 @@ public class kiwiTwinkieBeta extends LinearOpMode{
                 flyWheel.setPower(0);
             }
             if (decrementHandler.evaluate(gamepad1.dpad_down))flyWheelSpeed-=1;
-            if (incrementHandler.evaluate(gamepad1.dpad_up))flyWheelSpeed-=1;
+            if (incrementHandler.evaluate(gamepad1.dpad_up))flyWheelSpeed+=1;
 
 
 
