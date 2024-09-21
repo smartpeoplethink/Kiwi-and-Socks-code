@@ -13,7 +13,7 @@ public class driveControl{ //for handling values associated with driving.
     boolean fastDrive = false;
     double rotateValue = 0;
     driveControl(Vector movementFCN){
-        Vector Movement = movementFCN;
+        Movement = movementFCN;
     }
     private double maximumValue(){
         if (front >= left && front >= right){
