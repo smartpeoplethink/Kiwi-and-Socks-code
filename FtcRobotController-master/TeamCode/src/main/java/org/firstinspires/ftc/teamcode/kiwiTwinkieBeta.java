@@ -49,13 +49,19 @@ public class kiwiTwinkieBeta extends LinearOpMode{
 //                servo.setPosition(CATCH);
 //            }
 
-            if (flyWheelOn.evaluate(gamepad1.right_trigger>0.5)){
+            if (flyWheelOn.evaluate(gamepad1.left_trigger>0.5)){
                 flyWheel.setPower((((double)flyWheelSpeed)/100));
             }else{
                 flyWheel.setPower(0);
             }
-            if (decrementHandler.evaluate(gamepad1.dpad_down))flyWheelSpeed-=1;
-            if (incrementHandler.evaluate(gamepad1.dpad_up))flyWheelSpeed+=1;
+            if (decrementHandler.evaluate(gamepad1.dpad_down)){
+                flyWheelSpeed-=1;
+                if (flyWheelSpeed< 0)flyWheelSpeed = 0;
+            }
+            if (incrementHandler.evaluate(gamepad1.dpad_up)){
+                flyWheelSpeed+=1;
+                if (flyWheelSpeed> 100)flyWheelSpeed = 100;
+            }
 
 
 
