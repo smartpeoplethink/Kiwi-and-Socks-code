@@ -33,7 +33,7 @@ public class kiwiTwinkieBeta extends LinearOpMode{
         rightMotor = hardwareMap.get(DcMotor.class, "LeftMotor");//Wheel Num 1
         leftMotor = hardwareMap.get(DcMotor.class, "RightMotor");//Wheel Num 2
         frontMotor = hardwareMap.get(DcMotor.class, "FrontMotor");//Wheel Num 0
-        //Servo servo = hardwareMap.get(Servo.class, "left_hand");
+        Servo servo = hardwareMap.get(Servo.class, "BallController");
 
         waitForStart();
         while (opModeIsActive()){
@@ -43,11 +43,11 @@ public class kiwiTwinkieBeta extends LinearOpMode{
 
             //controlling inputs.
             motorControl.fastDrive = fastDrive.evaluate(gamepad1.y);
-//            if (servoReleaseHandler.evaluate(gamepad1.a)){
-//                servo.setPosition(RELEASE);
-//            }else{
-//                servo.setPosition(CATCH);
-//            }
+            if (servoReleaseHandler.evaluate(gamepad1.a)){
+                servo.setPosition(RELEASE);
+            }else{
+                servo.setPosition(CATCH);
+            }
 
             if (flyWheelOn.evaluate(gamepad1.left_trigger>0.5)){
                 flyWheel.setPower((((double)flyWheelSpeed)/100));
