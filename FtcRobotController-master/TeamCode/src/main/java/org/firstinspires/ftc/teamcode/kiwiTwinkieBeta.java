@@ -22,7 +22,7 @@ public class kiwiTwinkieBeta extends LinearOpMode{
     private final toggleButton incrementHandler = new toggleButton(true);
     private final toggleButton fastDrive = new toggleButton(false);
     private int flyWheelSpeed = 100;
-    private static double RELEASE = 0.24, CATCH = 0.2;
+    private static double RELEASE = 0, CATCH = 1;
     private boolean release = false;
     private final Vector Movement = new Vector();
     private long lastTime = System.currentTimeMillis();
@@ -44,15 +44,17 @@ public class kiwiTwinkieBeta extends LinearOpMode{
 //            if (gamepad1.dpad_left)RELEASE-=0.0001;
 
             //controlling inputs.
-            motorControl.fastDrive = fastDrive.evaluate(gamepad1.y);
-            release = servoReleaseHandler.evaluate(gamepad1.a);
+            motorControl.fastDrive = fastDrive.evaluate((gamepad1.y));
+
             if (release){
-                currentTime = lastTime-System.currentTimeMillis();
-                if (currentTime >= 100){
+
+                currentTime = System.currentTimeMillis()-lastTime;
+                if (currentTime >= 40){
                     release = false;
                 }
                 servo.setPosition(RELEASE);
             }else{
+                release = servoReleaseHandler.evaluate(gamepad1.a);
                 servo.setPosition(CATCH);
                 lastTime = System.currentTimeMillis();
                 currentTime = lastTime;
@@ -97,8 +99,11 @@ public class kiwiTwinkieBeta extends LinearOpMode{
             telemetry.addData("Lead 3d designer: ", "Gianluca");
             telemetry.addData("Version of Kiwi: ", 94);
             telemetry.addData("Speed: ",flyWheelSpeed);
-            telemetry.addData("Time: ",System.currentTimeMillis()%10000);
+            telemetry.addData("Time: ",currentTime);
             telemetry.addData("Smooth drive: ", !motorControl.fastDrive);
+            telemetry.addData("Release value: ", RELEASE);
+            telemetry.addData("Catch value: ", CATCH);
+            telemetry.addData("Release?: ", release);
 
             telemetry.update();
         }
