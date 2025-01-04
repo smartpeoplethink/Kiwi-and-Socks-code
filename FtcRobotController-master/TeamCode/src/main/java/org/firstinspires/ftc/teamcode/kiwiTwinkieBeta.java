@@ -22,7 +22,7 @@ public class kiwiTwinkieBeta extends LinearOpMode{
     private final toggleButton incrementHandler = new toggleButton(true);
     private final toggleButton fastDrive = new toggleButton(false);
     private int flyWheelSpeed = 100;
-    private static double RELEASE = 0, CATCH = 1;
+    private static double RELEASE = 0.85, CATCH = 1;
     private boolean release = false;
     private final Vector Movement = new Vector();
     private long lastTime = System.currentTimeMillis();
@@ -49,16 +49,18 @@ public class kiwiTwinkieBeta extends LinearOpMode{
             if (release){
 
                 currentTime = System.currentTimeMillis()-lastTime;
-                if (currentTime >= 40){
-                    release = false;
-                }
+
                 servo.setPosition(RELEASE);
             }else{
                 release = servoReleaseHandler.evaluate(gamepad1.a);
                 servo.setPosition(CATCH);
                 lastTime = System.currentTimeMillis();
-                currentTime = lastTime;
+                currentTime = 0;
             }
+            if (currentTime >= 90){
+                release = false;
+            }
+
 
             if (flyWheelOn.evaluate(gamepad1.left_trigger>0.5)){
                 flyWheel.setPower((((double)flyWheelSpeed)/100));
@@ -96,8 +98,7 @@ public class kiwiTwinkieBeta extends LinearOpMode{
 
             telemetry.addData("Lead coder: ", "Sam");
             telemetry.addData("Lead builder: ", "Jacob");
-            telemetry.addData("Lead 3d designer: ", "Gianluca");
-            telemetry.addData("Version of Kiwi: ", 94);
+            telemetry.addData("Tracking number: ", 90);
             telemetry.addData("Speed: ",flyWheelSpeed);
             telemetry.addData("Time: ",currentTime);
             telemetry.addData("Smooth drive: ", !motorControl.fastDrive);
